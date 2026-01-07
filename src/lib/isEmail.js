@@ -16,6 +16,7 @@ const default_email_options = {
   ignore_max_length: false,
   host_blacklist: [],
   host_whitelist: [],
+  trim: false,
 };
 
 /* eslint-disable max-len */
@@ -64,6 +65,16 @@ function validateDisplayName(display_name) {
 export default function isEmail(str, options) {
   assertString(str);
   options = merge(options, default_email_options);
+
+  if (options.trim) {
+    const trimmed = str.trim();
+
+    if (trimmed !== str && /^\s*".*"\s*@/.test(str)) {
+      return false;
+    }
+
+    str = trimmed;
+  }
 
   if (options.require_display_name || options.allow_display_name) {
     const display_email = str.match(splitNameAddress);
